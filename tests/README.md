@@ -22,34 +22,12 @@ This class is used to write unit tests for dialogs that test their responses on 
 Here is a simple example on how a test that uses `DialogTestClient` looks like:
 
 ```javascript
-const sut = new BookingDialog();
+const sut = new PoemDialog();
 const testClient = new DialogTestClient('msteams', sut);
 
 let reply = await testClient.sendActivity('hi');
-assert.strictEqual(reply.text, 'Where would you like to travel to?');
-
-reply = await testClient.sendActivity('Seattle');
-assert.strictEqual(reply.text, 'Where are you traveling from?');
-
-reply = await testClient.sendActivity('New York');
-assert.strictEqual(reply.text, 'When would you like to travel?');
-
-reply = await testClient.sendActivity('tomorrow');
-assert.strictEqual(reply.text, 'OK, I will book a flight from Seattle to New York for tomorrow, Is this Correct?');
-
-reply = await testClient.sendActivity('yes');
-assert.strictEqual(reply.text, 'Sure thing, wait while I finalize your reservation...');
-
-reply = testClient.getNextReply();
-assert.strictEqual(reply.text, 'All set, I have booked your flight to Seattle for tomorrow');
+assert.strictEqual(reply.text, 'Welcome to POEM AI. Will you like to proceed with my founder's assessment?');
 ```
-
-The project includes several examples on how to test different bot components:
-
-- [cancelAndHelpDialog.test](dialogs/cancelAndHelpDialog.test.js) shows how to write a simple data driven test for `CancelAndHelpDialog` using a test case array.
-- [bookingDialog.test](dialogs/bookingDialog.test.js) shows how to write a data driven test using a `bookingDialogTestCases` module to generate the test cases.
-- [mainDialog.test](dialogs/mainDialog.test.js) showcases how to use mock objects to mock the dialog's LUIS and `BookingDialog` dependencies to test `MainDialog` in isolation.
-- [dialogAndWelcomeBot.test](bots/dialogAndWelcomeBot.test.js) provides an example on how to write a test for the bot's `ActivityHandler` using `TestAdapter`.
 
 ## Further reading
 
