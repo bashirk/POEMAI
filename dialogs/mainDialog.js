@@ -9,6 +9,18 @@ class MyBot extends ActivityHandler {
     }
   
     async onTurn(turnContext) {
+
+     const text = turnContext.activity.text;
+ 
+     if (/^hi.*/i.test(text)) {
+      // Function to send welcome text & continue assessment
+     } else if (/^new.*/i.test(text)) {
+      // Func to create new application
+     } else if (/^delete.*/i.test(text)) {
+      // Func to clear all record
+     } else {
+      // Do nothing
+     }
       
     }
 }
