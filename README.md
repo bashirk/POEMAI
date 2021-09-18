@@ -1,6 +1,6 @@
 # POEM AI
 
-The POEM AI assesses the customer readiness of startups
+The POEM AI assess the customer readiness of startups
 
 This bot has been created using [Bot Framework](https://dev.botframework.com), it shows how to:
 

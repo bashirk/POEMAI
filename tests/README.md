@@ -3,7 +3,7 @@
 
 Bot Framework v4 bot tests for `POEM AI` bot.
 
-This project uses the [botbuilder-testing](https://www.npmjs.com/package/botbuilder-testing) package and [mocha](https://github.com/mochajs/mocha) to create unit tests for your bot.
+This project uses the [botbuilder-testing](https://www.npmjs.com/package/botbuilder-testing) package and [mocha](https://github.com/mochajs/mocha) to create unit tests for the POEM bot.
 
 This project shows how to:
 
@@ -26,8 +26,9 @@ const sut = new PoemDialog();
 const testClient = new DialogTestClient('msteams', sut);
 
 let reply = await testClient.sendActivity('hi');
-assert.strictEqual(reply.text, 'Welcome to POEM AI. Will you like to proceed with my founder's assessment?');
+assert.strictEqual(reply.text, 'Welcome to POEM AI. Will you like to proceed with my founder\'s assessment?');
 ```
+
 
 ## Further reading
 
