@@ -152,9 +152,9 @@ class FounderProfileDialog extends ComponentDialog {
             
         } else {
             // false for has linkedin
-            await step.context.sendActivity(`Thanks. But you are not eligible.`);
+            await step.context.sendActivity(`Thanks. But you need to have a LinkedIn profile before proceeding.`);
             await step.context.sendActivity(`Kindly go ahead in creating a LinkedIn profile here: https://linkedin.com`);
-            return await step.endDialog();
+            return await step.prompt(NAME_PROMPT, 'And provide the link to your newly-created LinkedIn profile, below:');
         }
     
     }
@@ -163,7 +163,7 @@ class FounderProfileDialog extends ComponentDialog {
         step.values.linkedin = step.result;
         console.log(step.values.linkedin);
         // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
-        return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, do you have a CVI?`, ['yes', 'no']);
+        return await step.prompt(CONFIRM_PROMPT, `Thanks, ${ step.values.fname }. Do you have a CVI?`, ['yes', 'no']);
      
     }
 
@@ -175,9 +175,9 @@ class FounderProfileDialog extends ComponentDialog {
             
         } else {
             // false for has cvi
-            await step.context.sendActivity(`Thanks. But you need to have a CVI before proceeding.`);
+            await step.context.sendActivity(`Thanks again. But you need to have a CVI before proceeding.`);
             await step.context.sendActivity(`Kindly go ahead and take your CVI here: https://markschall.com`);
-            return await step.endDialog();
+            return await step.prompt(NAME_PROMPT, 'And provide the link to your CVI result, below:');
         }
     
     }
