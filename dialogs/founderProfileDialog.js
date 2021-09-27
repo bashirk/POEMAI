@@ -35,23 +35,49 @@ class FounderProfileDialog extends ComponentDialog {
         this.addDialog(new TextPrompt(NAME_PROMPT));
         this.addDialog(new ChoicePrompt(CHOICE_PROMPT));
         this.addDialog(new ConfirmPrompt(CONFIRM_PROMPT));
-        this.addDialog(new NumberPrompt(NUMBER_PROMPT, this.agePromptValidator));
-        this.addDialog(new AttachmentPrompt(ATTACHMENT_PROMPT, this.picturePromptValidator));
+        this.addDialog(new NumberPrompt(NUMBER_PROMPT, this.fffPromptValidator));
+        //this.addDialog(new AttachmentPrompt(ATTACHMENT_PROMPT, this.picturePromptValidator));
 
         this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
-            this.nameStep.bind(this),
-            this.hasCofounderStep.bind(this),
+            this.firstNameStep.bind(this),
+            this.lastNameStep.bind(this),
+            this.emailStep.bind(this),
+            this.linkedincfmStep.bind(this),
+            this.linkedInStep.bind(this),
+            this.cvicfmStep.bind(this),
+            this.cviStep.bind(this),
+            this.twtcfmStep.bind(this),
+            this.twitterStep.bind(this),
+            this.instcfmStep.bind(this),
+            this.instagramStep.bind(this),
+            this.fbcfmStep.bind(this),
+            this.facebookStep.bind(this),
+            this.startupNameStep.bind(this),
+            this.startupDescStep.bind(this),
+            this.pitchcfmStep.bind(this),
+            this.pitchDeckStep.bind(this),
+            this.poemcfmStep.bind(this),
+            this.poemProfileStep.bind(this),
+            //this.regLLCStep.bind(this),
+            this.mnthOpnStep.bind(this),
             this.fulltimeStep.bind(this),
-            this.ageStep.bind(this),
-            this.ddShareStep.bind(this),
-            this.baseCountryStep.bind(this),
+            this.hasCofounderStep.bind(this),
             this.techEnbldStep.bind(this),
-            this.fffraiseStep.bind(this),
-            this.startupStageStep.bind(this),
+            //this.industryStep.bind(this),
+            //this.mvpStep.bind(this),
+            this.prevRaiseStep.bind(this),
             this.revenueStep.bind(this),
+            this.startupStageStep.bind(this),
             this.employeesStep.bind(this),
+            //this.fteStaffStep.bind(this),
+            //this.femaleFTEStep.bind(this),
+            //this.nigerianEduStep.bind(this),
+            this.baseCountryStep.bind(this),
+            //this.equityStep.bind(this),
+            //this.sdgStep.bind(this),
+            //this.learnStep.bind(this),
+            this.ddShareStep.bind(this),
 
-            
             this.confirmStep.bind(this),
             this.summaryStep.bind(this)
             
@@ -78,20 +104,243 @@ class FounderProfileDialog extends ComponentDialog {
     }
 
 
-    async nameStep(step) {
+    async firstNameStep(step) {
         // Here's the beginning of the dialog.
         await step.context.sendActivity(`Hey, welcome!`);
 
         // READER: Note that WaterfallStep always finishes with the end of the Waterfall or with another dialog; here it is a Prompt Dialog.
-        return await step.prompt(NAME_PROMPT, 'Kindly provide me with your name');
+        return await step.prompt(NAME_PROMPT, 'Kindly provide me with your first name');
+    }
+
+    
+    async lastNameStep(step) {
+        console.log(step.result);
+        step.values.fname = step.result;
+
+        // We can send messages to the user at any point in the WaterfallStep. But we had to save the previous result (founder name), to avoid being pushed off the stack
+        await step.context.sendActivity(`Thanks, ${ step.values.fname }.`);
+        // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
+        return await step.prompt(NAME_PROMPT, 'What\'s your last name?');
+     
+    }
+
+    async emailStep(step) {
+        console.log(step.result);
+        step.values.lname = step.result;
+
+        // We can send messages to the user at any point in the WaterfallStep. But we had to save the previous result (founder name), to avoid being pushed off the stack
+        await step.context.sendActivity(`Thanks, ${ step.values.fname }.`);
+        // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
+        return await step.prompt(NAME_PROMPT, 'What\'s your email address?');
+     
+    }
+
+    async linkedincfmStep(step) {
+        step.values.email = step.result;
+        console.log(step.values.lname);
+        console.log(step.values.email);
+        // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
+        return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, do you have a LinkedIn account?`, ['yes', 'no']);
+     
+    }
+
+    async linkedInStep(step) {
+
+        if (step.result) {
+            // true for has linkedin
+            return await step.prompt(NAME_PROMPT, 'Please provide a link to your LinkedIn profile:');
+            
+        } else {
+            // false for has linkedin
+            await step.context.sendActivity(`Thanks. But you are not eligible.`);
+            await step.context.sendActivity(`Kindly go ahead in creating a LinkedIn profile here: https://linkedin.com`);
+            return await step.endDialog();
+        }
+    
+    }
+
+    async cvicfmStep(step) {
+        step.values.linkedin = step.result;
+        console.log(step.values.linkedin);
+        // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
+        return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, do you have a CVI?`, ['yes', 'no']);
+     
+    }
+
+    async cviStep(step) {
+
+        if (step.result) {
+            // true for has cvi
+            return await step.prompt(NAME_PROMPT, 'Please provide a link to your CVI:');
+            
+        } else {
+            // false for has cvi
+            await step.context.sendActivity(`Thanks. But you need to have a CVI before proceeding.`);
+            await step.context.sendActivity(`Kindly go ahead and take your CVI here: https://markschall.com`);
+            return await step.endDialog();
+        }
+    
+    }
+
+    async twtcfmStep(step) {
+        step.values.cvi = step.result;
+        console.log(step.values.cvi);
+        // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
+        return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, do you have a Twitter account?`, ['yes', 'no']);
+     
+    }
+
+    async twitterStep(step) {
+
+        if (step.result) {
+            // true for has twitter
+            return await step.prompt(NAME_PROMPT, 'Please provide a link to your Twitter profile:');
+            
+        } else {
+            // false for has twitter
+            return await step.next('Negative');
+        }
+    
+    }
+
+    async instcfmStep(step) {
+        step.values.twitter = step.result;
+        const msg = step.values.twitter === 'Negative' ? 'Thanks. It has been recorded that you have no Twitter account.' : `I have the link to your Twitter profile as: ${ step.values.twitter }.`;
+
+        await step.context.sendActivity(msg);
+
+        
+
+        console.log(step.values.twitter);
+        // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
+        return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, do you have an Instagram account?`, ['yes', 'no']);
+     
+    }
+
+    async instagramStep(step) {
+
+        if (step.result) {
+            // true for has Instagram
+            return await step.prompt(NAME_PROMPT, 'Please provide a link to your Instagram profile:');
+            
+        } else {
+            // false for has Instagram
+            return await step.next('Negative');    
+        }
+    
+    }
+
+    async fbcfmStep(step) {
+
+        step.values.instagram = step.result;
+        const msg = step.values.instagram === 'Negative' ? 'Thanks. It has been recorded that you have no Instagram account.' : `I have the link to your Instagram profile as: ${ step.values.instagram }.`;
+
+        await step.context.sendActivity(msg);
+
+        
+
+        console.log(step.values.instagram);
+        // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
+        return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, do you have a Facebook account?`, ['yes', 'no']);
+     
+    }
+
+    async facebookStep(step) {
+
+        if (step.result) {
+            // true for has Facebook
+            return await step.prompt(NAME_PROMPT, 'Please provide a link to your Facebook profile:');
+            
+        } else {
+            // false for has Facebook
+            return await step.next('Negative');  
+        }
+    
+    }
+
+    async startupNameStep(step) {
+        step.values.facebook = step.result;
+        const msg = step.values.facebook === 'Negative' ? 'Thanks. It has been recorded that you have no Facebook account.' : `I have the link to your Facebook profile as: ${ step.values.facebook }.`;
+
+        await step.context.sendActivity(msg);
+
+        
+
+        console.log(step.values.facebook);
+       
+        // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
+        return await step.prompt(NAME_PROMPT, 'What\'s your startup\'s name?');
+     
+    }
+
+    async startupDescStep(step) {
+        console.log(step.result);
+        step.values.startupname = step.result;
+
+        // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
+        return await step.prompt(NAME_PROMPT, 'Please describe your startup in a tweet:');
+     
+    }
+
+    async pitchcfmStep(step) {
+        step.values.startupDesc = step.result;
+        console.log(step.values.startupDesc);
+        // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
+        return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, do you have a pitch deck?`, ['yes', 'no']);
+     
+    }
+
+    async pitchDeckStep(step) {
+
+        if (step.result) {
+            // true for has pitchDeck
+            return await step.prompt(NAME_PROMPT, 'Please provide the link to your startup\'s pitch deck:');
+            
+        } else {
+            // false for has pitchDeck
+            return await step.next('Negative');  
+        }
+    
+    }
+
+    async poemcfmStep(step) {
+        step.values.pitchDeck = step.result;
+        const msg = step.values.pitchDeck === 'Negative' ? 'Thanks. It has been recorded that you have no pitch deck.' : `I have the link to your pitch deck as: ${ step.values.pitchDeck }.`;
+
+        await step.context.sendActivity(msg);
+
+        console.log(step.values.pitchDeck);
+       
+        // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
+        return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, do you have a POEM profile?`, ['yes', 'no']);
+     
+    }
+
+    async poemProfileStep(step) {
+
+        if (step.result) {
+            // true for has poemProfile
+            return await step.prompt(NAME_PROMPT, 'Please provide the link to your startup\'s POEM profile:');
+            
+        } else {
+            // false for has poemProfile
+            return await step.next('Negative');  
+        }
+    
     }
 
     async hasCofounderStep(step) {
-        step.values.name = step.result;
-        // We can send messages to the user at any point in the WaterfallStep. But we had to save the previous result (founder name), to avoid being pushed off the stack
-        await step.context.sendActivity(`Thanks, ${ step.values.name }.`);
+
+        step.values.poemProfile = step.result;
+        const msg = step.values.poemProfile === 'Negative' ? 'Thanks. It has been recorded that you have no POEM profile.' : `I have the link to your POEM profile as: ${ step.values.poemProfile }.`;
+
+        await step.context.sendActivity(msg);
+
+        console.log(step.values.poemProfile);
+
+        console.log(step.values.fname);
         // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
-        return await step.prompt(CONFIRM_PROMPT, 'Do you have a cofounder?', ['yes', 'no']);
+        return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, do you have a cofounder?`, ['yes', 'no']);
      
     }
 
@@ -99,7 +348,10 @@ class FounderProfileDialog extends ComponentDialog {
         
         if (step.result) {
             // true for has cofounder
-            return await step.prompt(CONFIRM_PROMPT, 'Are all your cofounders working full-time on the startup?', ['yes', 'no']);
+            trn = `Test age step`;
+            return await step.context.sendActivity(trn); 
+            
+            //return await step.prompt(CONFIRM_PROMPT, 'Are all your cofounders working full-time on the startup?', ['yes', 'no']);
         } else {
             // false for has cofounder
             await step.context.sendActivity(`Thanks. But you are not eligible.`);
@@ -108,7 +360,7 @@ class FounderProfileDialog extends ComponentDialog {
     
     }
 
-    async ageStep(step) {
+    async mnthOpnStep(step) {
         
         if (step.result) {
             // true for cofounders fulltime
@@ -160,7 +412,7 @@ class FounderProfileDialog extends ComponentDialog {
     
     }
 
-    async fffraiseStep(step) {
+    async prevRaiseStep(step) {
 
         if (step.result) {
             // true for techEnbld, ask follow up qstn
@@ -176,18 +428,19 @@ class FounderProfileDialog extends ComponentDialog {
 
     async startupStageStep(step) {
 
-        step.values.fffraise = step.result;
+        step.values.prevRaise = step.result;
 
-        if (step.values.fffraise >= 100) {
-            // true for fffraise, ask follow up qstn
+        if (step.values.prevRaise >= 100) {
+            // true for prevRaise, ask follow up qstn
             return await step.prompt(CHOICE_PROMPT, {
                 prompt: 'What stage is your startup currently?',
                 choices: ChoiceFactory.toChoices(['Pre-MVP', 'Pre-Seed', 'Seed', 'Pre-Series A'])
             });
         } else {
-            // false for fffraise
-            await step.context.sendActivity(`Thanks. But you are not eligible. You must have raised $USD100 or more, in FFF funding.`);
-            return await step.endDialog();
+            // false for prevRaise
+            step.values.prevRaise = 0;
+            return await step.context.sendActivity(`Thanks. But you are not eligible. You must have raised $USD100 or more, in FFF funding.`);
+            //return await step.endDialog();
         }
     
     }
@@ -241,12 +494,12 @@ class FounderProfileDialog extends ComponentDialog {
             const founderProfile = await this.founderProfile.get(step.context, new FounderProfile());
 
             founderProfile.name = step.values.name;
-            founderProfile.fffraise = step.values.fffraise;
+            founderProfile.prevRaise = step.values.prevRaise;
             founderProfile.startupStage = step.values.startupStage;
             founderProfile.revenue = step.values.revenue;
             founderProfile.picture = step.values.picture;
 
-            let msg = `I have your name as ${ founderProfile.name }, your FFF raise as ${ founderProfile.fffraise }, your startup stage as ${ founderProfile.startupStage }, and your startup revenue as ${ founderProfile.revenue }`;
+            let msg = `I have your name as ${ founderProfile.name }, your FFF raise as ${ founderProfile.prevRaise }, your startup stage as ${ founderProfile.startupStage }, and your startup revenue as ${ founderProfile.revenue }`;
             //if (founderProfile.age !== -1) {
               //  msg += ` I also have your age as ${ founderProfile.age }`;
             //}
