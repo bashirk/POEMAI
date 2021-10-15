@@ -58,27 +58,25 @@ class FounderProfileDialog extends ComponentDialog {
             this.pitchDeckStep.bind(this),
             this.poemcfmStep.bind(this),
             this.poemProfileStep.bind(this),
-            //this.regLLCStep.bind(this),
+            this.regLLCcfmStep.bind(this),
+            this.regLLCStep.bind(this),
             this.mnthOpnStep.bind(this),
             this.fulltimeStep.bind(this),
             this.hasCofounderStep.bind(this),
             this.techEnbldStep.bind(this),
-            //this.industryStep.bind(this),
-            //this.mvpStep.bind(this),
+            this.industryStep.bind(this),
+            this.mvpStep.bind(this),
+            this.prevRaisecfmStep.bind(this),
             this.prevRaiseStep.bind(this),
             this.revenueStep.bind(this),
-            this.startupStageStep.bind(this),
             this.employeesStep.bind(this),
-            //this.fteStaffStep.bind(this),
-            //this.femaleFTEStep.bind(this),
-            //this.nigerianEduStep.bind(this),
+            this.femaleFTEStep.bind(this),
+            this.nigerianEduStep.bind(this),
             this.baseCountryStep.bind(this),
-            //this.equityStep.bind(this),
-            //this.sdgStep.bind(this),
-            //this.learnStep.bind(this),
+            this.sdgStep.bind(this),
+            this.learnStep.bind(this),
+            this.equityStep.bind(this),
             this.ddShareStep.bind(this),
-
-            this.confirmStep.bind(this),
             this.summaryStep.bind(this)
             
         ]));
@@ -298,16 +296,15 @@ class FounderProfileDialog extends ComponentDialog {
             
         } else {
             // false for has pitchDeck
-            return await step.next('Negative');  
+            await step.context.sendActivity(`Thanks again. But you need to have a Pitch Deck before proceeding.`);
+            await step.context.sendActivity(`Kindly go ahead and use the format in this document to create your pitch deck: https://pitchdeck.com`);
+            return await step.prompt(NAME_PROMPT, 'And provide the link to your created pitch deck, below:');
         }
     
     }
 
     async poemcfmStep(step) {
         step.values.pitchDeck = step.result;
-        const msg = step.values.pitchDeck === 'Negative' ? 'Thanks. It has been recorded that you have no pitch deck.' : `I have the link to your pitch deck as: ${ step.values.pitchDeck }.`;
-
-        await step.context.sendActivity(msg);
 
         console.log(step.values.pitchDeck);
        
@@ -324,56 +321,290 @@ class FounderProfileDialog extends ComponentDialog {
             
         } else {
             // false for has poemProfile
-            return await step.next('Negative');  
+            await step.context.sendActivity(`Thanks again. But you need to have a POEM profile before proceeding.`);
+            await step.context.sendActivity(`Kindly go ahead and use the format in this document to create your POEM profile: https://poem.com`);
+            return await step.prompt(NAME_PROMPT, 'And provide the link to your created POEM profile, below:'); 
         }
     
     }
 
-    async hasCofounderStep(step) {
+    async regLLCcfmStep(step) {
 
         step.values.poemProfile = step.result;
-        const msg = step.values.poemProfile === 'Negative' ? 'Thanks. It has been recorded that you have no POEM profile.' : `I have the link to your POEM profile as: ${ step.values.poemProfile }.`;
-
-        await step.context.sendActivity(msg);
 
         console.log(step.values.poemProfile);
 
-        console.log(step.values.fname);
         // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
-        return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, do you have a cofounder?`, ['yes', 'no']);
+        return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, is your startup registered as a Limited Liability Company?`, ['yes', 'no']);
      
     }
 
-    async fulltimeStep(step) {
+    async regLLCStep(step) {
         
         if (step.result) {
-            // true for has cofounder
-            trn = `Test age step`;
-            return await step.context.sendActivity(trn); 
-            
-            //return await step.prompt(CONFIRM_PROMPT, 'Are all your cofounders working full-time on the startup?', ['yes', 'no']);
+            // true for regLLC
+            const promptOptions = { prompt: 'How many months has your startup been in operation?', retryPrompt: 'The value entered must be a decimal.' };
+            return await step.prompt(NUMBER_PROMPT, promptOptions);
         } else {
-            // false for has cofounder
-            await step.context.sendActivity(`Thanks. But you are not eligible.`);
+            // false for regLLC 
+            await step.context.sendActivity(`Thanks. But your startup needs to be a registered LLC.`);
             return await step.endDialog();
         }
     
     }
 
     async mnthOpnStep(step) {
-        
-        if (step.result) {
-            // true for cofounders fulltime
-            return await step.prompt(CONFIRM_PROMPT, 'Is your company less than 5 years old?', ['yes', 'no']);
+
+        step.values.mnthOpn = step.result;
+
+        if (step.values.mnthOpn > 60 || step.values.mnthOpn < 6) {
+            // true, terminate
+            step.values.prevRaise = 0;
+            await step.context.sendActivity(`Thanks. But your startup must be in-between 6 months to 5 years of operation.`);
+            return await step.endDialog();
+
+            
         } else {
-            // false for cofounders fulltime
-            await step.context.sendActivity(`Thanks. But all cofounders need to be working fulltime on the startup.`);
+            // false, ask follow up
+            return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, are you working full-time on your startup?`, ['yes', 'no']);
+            
+        }
+    
+    }
+
+    async fulltimeStep(step) {
+
+        if (step.result) {
+            // true for fulltime
+            return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, do you have a co-founder?`, ['yes', 'no']);
+        } else {
+            // false for fulltime 
+            await step.context.sendActivity(`Thanks. But you must be working full-time on your startup.`);
             return await step.endDialog();
         }
+    
+    }
+
+
+    async hasCofounderStep(step) {
+
+        if (step.result) {
+            // true for hasCofounder
+            return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, is your startup a technology-enabled business?`, ['yes', 'no']);
+        } else {
+            // false for hasCofounder 
+            await step.context.sendActivity(`Thanks. But you must have a co-founder.`);
+            return await step.endDialog();
+        }
+    }
+
+
+    async techEnbldStep(step) {
+        
+        if (step.result) {
+            // true for techEnbld, ask follow up qstn
+            return await step.prompt(CHOICE_PROMPT, {
+                prompt: 'What industry sector does your startup operate in?',
+                choices: ChoiceFactory.toChoices(['Health (Healthtec)', 'Education (Edutec)', 'Retail (eCommerce)', 'Finance & Banking (Fintech)', 'Agriculture (Agritec)', 'Enterprise (SaaS)', 'Renewables (Energy)', 'Logistics (Mobility)', 'Other'])
+            });
+        } else {
+            // false for techEnbld
+            await step.context.sendActivity(`Thanks. But your startup must be tech-enabled.`);
+            return await step.endDialog();
+        }
+    
+    }
+
+    async industryStep(step) {
+
+        step.values.industry = step.result.value;
+
+        console.log(step.values.industry);
+
+        // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
+        return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, has your startup built a Minimum Viable Product (MVP)?`, ['yes', 'no']);
+    
+    }
+
+    async mvpStep(step) {
+
+        if (step.result) {
+            // true for hasMVP
+            return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, has your startup raised capital from investors before?`, ['yes', 'no']);
+        } else {
+            // false for hasMVP 
+            await step.context.sendActivity(`Thanks. But your startup must have built an MVP.`);
+            return await step.endDialog();
+        }
+    }
+
+    async prevRaisecfmStep(step) {
+
+        if (step.result) {
+            // true for has prevRaise
+            return await step.prompt(NUMBER_PROMPT, 'Great. How much capital (in $USD) has your startup raised from investors since you started?');
+            
+        } else {
+            // false for has prevRaise
+            return await step.next(0);    
+        }
+    
+    }
+
+    async prevRaiseStep(step) {
+        step.values.prevRaise = step.result;
+        console.log(step.values.prevRaise);
+        const msg = step.values.prevRaise === 0 ? 'Thanks. It has been recorded that you have never raised capital from investors.' : `Great. It has been recorded that you've raised $USD${ step.values.fname }.`;
+
+        await step.context.sendActivity(msg);
+
+        
+
+        console.log(step.values.prevRaise);
+        // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
+        return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how much (if any) revenue in $USD have you generated in the last 12 months?`);
      
     }
 
-    async ddShareStep(step) {
+    async revenueStep(step) {
+
+        step.values.revenue = step.result;
+
+        console.log(step.values.revenue);
+
+        if (step.values.revenue <= 0) {
+
+            step.values.startupStage = 'Pre-Revenue';
+            return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
+     
+        } else if (step.values.revenue > 0 && step.values.revenue <= 100000) {
+            
+            step.values.startupStage = 'Pre-Seed';
+            return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
+     
+        } else if (step.values.revenue > 100000) {
+           
+            step.values.startupStage = 'Seed';
+            return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
+     
+        } else {
+            step.values.startupStage = 'Undefined';
+            return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
+        }
+    
+    }
+
+    async employeesStep(step) {
+
+        console.log(step.values.startupStage);
+        step.values.fullTimeStaff = step.result;
+        console.log(step.values.fullTimeStaff);
+
+        if (step.values.fullTimeStaff > 4) {
+            return await step.prompt(NUMBER_PROMPT, 'How many of your startup\'s full-time staff are female (including your cofounder)?');
+        } else {
+            await step.context.sendActivity(`Thanks. You are not eligible, your startup needs to have at least 4 full-time staffs (including cofounders).`);
+            return await step.endDialog();
+        }
+    
+    }
+
+    async femaleFTEStep(step) {
+
+        step.values.femaleFTE = step.result;
+        console.log(step.values.femaleFTE);
+
+        step.values.ratio = step.values.fullTimeStaff * 0.3;
+
+        if (step.values.femaleFTE >= step.values.ratio) {
+            // true for > ratio
+            return await step.prompt(CONFIRM_PROMPT, 'Did you go to school in a Nigerian Institution? ');
+        } else {
+            // false for > ratio
+            await step.context.sendActivity(`Thanks. You are not eligible, your female staff need to be at least 30% of your full-time staffs.`);
+            return await step.endDialog();
+        }
+    
+    }
+
+
+    async nigerianEduStep(step) {
+
+        if (step.result == 'true' && step.values.startupStage == 'Pre-Revenue') {
+
+            await step.context.sendActivity(`Thanks. You are not eligible, your startup needs to be at MVP, Pre-Seed, or Seed.`);
+            return await step.endDialog();
+            
+        } else if (step.result == 'false') {
+            
+            await step.context.sendActivity(`Thanks. You are not eligible, you need to have attended a Nigerian institution.`);
+            return await step.endDialog();
+     
+        } else {
+            return await step.prompt(CHOICE_PROMPT, {
+                prompt: 'What country (or countries) do you operate in?',
+                choices: ChoiceFactory.toChoices(['Ivory Coast', 'Egypt', 'Ghana', 'Kenya', 'Nigeria', 'Senegal'])
+            });
+        }
+    
+    }
+
+    async baseCountryStep(step) {
+
+        step.values.baseCountry = step.result;
+        console.log(step.values.baseCountry);
+
+        if (step.values.baseCountry != 'Nigeria' && step.values.startupStage == 'Pre-Seed') {
+            // true for condition not met
+            await step.context.sendActivity(`Thanks. You are not eligible. Your startup needs to be operational only in Nigeria.`);
+            return await step.endDialog();
+        } else if (step.values.prevRaise == 0) {
+            return await step.prompt(CONFIRM_PROMPT, 'Would you be prepared to give us equity shares in your startup in return for our investment-readiness Advisory services?');
+        } else {
+            await step.context.sendActivity(`Unknown entry.`);
+            return await step.endDialog();
+        }    
+    }
+
+    async sdgStep(step) {
+
+        if (step.result) {
+            // true, ask follow up qstn
+            return await step.prompt(CHOICE_PROMPT, {
+                prompt: 'How does your startup contribute to positive social and/or environmental impact?',
+                choices: ChoiceFactory.toChoices(['Ivory Coast', 'Egypt', 'Ghana', 'Kenya', 'Nigeria', 'Senegal'])
+            });
+        
+        } else {
+            // false for ddShare
+            await step.context.sendActivity(`Thanks. You are not eligible. We will be needing equity shares in your startup in return for our investment-readiness Advisory services.`);
+            return await step.endDialog();
+        }
+    
+    }
+
+    async learnStep(step) {
+        console.log(step.result);
+        step.values.sdg = step.result;
+
+        // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
+        return await step.prompt(NAME_PROMPT, 'How did you learn about TD, TVC Labs or Greentec?');
+     
+    }
+
+    async equityStep(step) {
+        console.log(step.result);
+        step.values.ref = step.result;
+
+        // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
+        return await step.prompt(CONFIRM_PROMPT, 'Do you agree to share due diligence information with TVC Labs for the purposes of assessing your business for potential investment?');
+     
+    }
+
+  ////STOP  
+
+    
+    async nddShareStep(step) {
 
         if (step.result) {
             // true for age of startup
@@ -386,120 +617,43 @@ class FounderProfileDialog extends ComponentDialog {
     
     }
 
-    async baseCountryStep(step) {
-
-        if (step.result) {
-            // true for ddShare, ask follow up qstn
-            return await step.prompt(CONFIRM_PROMPT, 'Is your startup company based in Nigeria?', ['yes', 'no']);
-        } else {
-            // false for ddShare
-            await step.context.sendActivity(`Thanks. You are not eligible, because you'll need to provide us with due diligence information about your startup.`);
-            return await step.endDialog();
-        }
-    
-    }
-
-    async techEnbldStep(step) {
-
-        if (step.result) {
-            // true for baseCountry, ask follow up qstn
-            return await step.prompt(CONFIRM_PROMPT, 'Is your startup tech-enabled?', ['yes', 'no']);
-        } else {
-            // false for baseCountry
-            await step.context.sendActivity(`Thanks. But you are not eligible.`);
-            return await step.endDialog();
-        }
-    
-    }
-
-    async prevRaiseStep(step) {
-
-        if (step.result) {
-            // true for techEnbld, ask follow up qstn
-            const promptOptions = { prompt: 'How much in $USD  have you raised in FFF (Family & Friends) funding?', retryPrompt: 'The value entered must be a decimal.' };
-            return await step.prompt(NUMBER_PROMPT, promptOptions);
-        } else {
-            // false for techEnbld
-            await step.context.sendActivity(`Thanks. But you are not eligible. Your startup has to be technology enabled`);
-            return await step.endDialog();
-        }
-    
-    }
-
-    async startupStageStep(step) {
-
-        step.values.prevRaise = step.result;
-
-        if (step.values.prevRaise >= 100) {
-            // true for prevRaise, ask follow up qstn
-            return await step.prompt(CHOICE_PROMPT, {
-                prompt: 'What stage is your startup currently?',
-                choices: ChoiceFactory.toChoices(['Pre-MVP', 'Pre-Seed', 'Seed', 'Pre-Series A'])
-            });
-        } else {
-            // false for prevRaise
-            step.values.prevRaise = 0;
-            return await step.context.sendActivity(`Thanks. But you are not eligible. You must have raised $USD100 or more, in FFF funding.`);
-            //return await step.endDialog();
-        }
-    
-    }
-
-    async revenueStep(step) {
-
-        step.values.startupStage = step.result.value;
-
-        if (step.values.startupStage === 'Seed' || step.values.startupStage === 'Pre-Seed') {
-            // true for startupStage, ask follow up qstn
-            const promptOptions = { prompt: 'How much is your total revenue (in $USD) within the past 12 months?', retryPrompt: 'The value entered must be a decimal.' };
-            return await step.prompt(NUMBER_PROMPT, promptOptions);
-        } else {
-            // false for startupStage
-            await step.context.sendActivity(`Thanks. But you are not eligible. Your startup must be either Seed or Pre-Seed.`);
-            return await step.endDialog();
-        }
-    
-    }
-
-    async employeesStep(step) {
-
-        step.values.revenue = step.result;
-        console.log('The startup revenue:', step.values.revenue);
-
-        if (step.values.revenue >= 20000) {
-            // true for revenue, ask follow up qstn
-            const promptOptions = { prompt: 'How many employees do you have?', retryPrompt: 'The value entered must be a decimal.' };
-            return await step.prompt(NUMBER_PROMPT, promptOptions);
-        } else {
-            // false for revenue
-            await step.context.sendActivity(`Thanks. But you are not eligible. Your startup must have earned $USD20000 or more within the past 12 months.`);
-            return await step.endDialog();
-        }
-    
-    }
-
-
     //TODO: ADD ATTCHMNT HERE
 
     //TEMPS
-    
-    async confirmStep(step) {
-      
-        return await step.prompt(CONFIRM_PROMPT, { prompt: 'Do you agree to having your input data stored in our founders\' database?' });
-    }
 
     async summaryStep(step) {
         if (step.result) {
             // Get the current profile object from user state.
             const founderProfile = await this.founderProfile.get(step.context, new FounderProfile());
 
-            founderProfile.name = step.values.name;
-            founderProfile.prevRaise = step.values.prevRaise;
-            founderProfile.startupStage = step.values.startupStage;
-            founderProfile.revenue = step.values.revenue;
-            founderProfile.picture = step.values.picture;
 
-            let msg = `I have your name as ${ founderProfile.name }, your FFF raise as ${ founderProfile.prevRaise }, your startup stage as ${ founderProfile.startupStage }, and your startup revenue as ${ founderProfile.revenue }`;
+            founderProfile.fname = step.values.fname;
+            founderProfile.lname = step.values.lname;
+            founderProfile.email = step.values.email;
+            founderProfile.linkedin = step.values.linkedin;
+            founderProfile.cvi = step.values.cvi;
+            founderProfile.facebook = step.values.facebook;
+            founderProfile.twitter = step.values.twitter;
+            founderProfile.instagram = step.values.instagram;
+            founderProfile.startupname = step.values.startupname;
+            founderProfile.startupDesc = step.values.startupDesc;
+            founderProfile.pitchDeck = step.values.pitchDeck;
+            founderProfile.poemProfile = step.values.poemProfile;
+            founderProfile.mnthOpn = step.values.mnthOpn;
+           
+            let msg = `Thanks, ${ founderProfile.fname }. \n\n
+            I have your last name as ${ founderProfile.lname }, \n\n
+            your email as ${ founderProfile.email }, \n\n
+            the link to your linkedin as ${ founderProfile.linkedin }, \n\n
+            the link to your cvi as ${ founderProfile.cvi }, \n\n
+            the link to your facebook as ${ founderProfile.facebook }, \n\n
+            the link to your instagram as ${ founderProfile.instagram }, \n\n
+            the link to your twitter as ${ founderProfile.twitter }, \n\n
+            your startup name as ${ founderProfile.startupname }, \n\n
+            a description of your startup as ${ founderProfile.startupDesc }, \n\n
+            the link to your pitch deck as ${ founderProfile.pitchDeck }, \n\n
+            the link to your POEM profile as ${ founderProfile.poemProfile }, \n\n
+            your months of operation as ${ founderProfile.mnthOpn },`;
             //if (founderProfile.age !== -1) {
               //  msg += ` I also have your age as ${ founderProfile.age }`;
             //}
@@ -509,7 +663,7 @@ class FounderProfileDialog extends ComponentDialog {
             await step.context.sendActivity(msg);
 
         } else {
-            await step.context.sendActivity('Thanks. Your profile will not be kept.');
+            await step.context.sendActivity('Thanks. Your profile will not be kept, and this has made your startup ineligible.');
         }
 
         // Here is the end of the whole dialog.
