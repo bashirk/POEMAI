@@ -76,7 +76,6 @@ class FounderProfileDialog extends ComponentDialog {
             this.sdgStep.bind(this),
             this.learnStep.bind(this),
             this.equityStep.bind(this),
-            this.ddShareStep.bind(this),
             this.summaryStep.bind(this)
             
         ]));
