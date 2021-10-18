@@ -453,7 +453,7 @@ class FounderProfileDialog extends ComponentDialog {
     async prevRaiseStep(step) {
         step.values.prevRaise = step.result;
         console.log(step.values.prevRaise);
-        const msg = step.values.prevRaise === 0 ? 'Thanks. It has been recorded that you have never raised capital from investors.' : `Great. It has been recorded that you've raised $USD${ step.values.fname }.`;
+        const msg = step.values.prevRaise === 0 ? 'Thanks. It has been recorded that you have never raised capital from investors.' : `Great. It has been recorded that you've raised $USD${ step.values.prevRaise }.`;
 
         await step.context.sendActivity(msg);
 
@@ -474,20 +474,28 @@ class FounderProfileDialog extends ComponentDialog {
         if (step.values.revenue <= 0) {
 
             step.values.startupStage = 'Pre-Revenue';
+            await step.context.sendActivity(`Thanks. Your startup stage has been identified as ${ step.values.startupStage }.`);
+            
             return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
      
         } else if (step.values.revenue > 0 && step.values.revenue <= 100000) {
             
             step.values.startupStage = 'Pre-Seed';
+            await step.context.sendActivity(`Thanks. Your startup stage has been identified as ${ step.values.startupStage }.`);
+            
             return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
      
         } else if (step.values.revenue > 100000) {
            
             step.values.startupStage = 'Seed';
+            await step.context.sendActivity(`Thanks. Your startup stage has been identified as ${ step.values.startupStage }.`);
+            
             return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
      
         } else {
             step.values.startupStage = 'Undefined';
+            await step.context.sendActivity(`Thanks. Your startup stage has been identified as ${ step.values.startupStage }.`);
+            
             return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
         }
     
@@ -499,7 +507,7 @@ class FounderProfileDialog extends ComponentDialog {
         step.values.fullTimeStaff = step.result;
         console.log(step.values.fullTimeStaff);
 
-        if (step.values.fullTimeStaff > 4) {
+        if (step.values.fullTimeStaff >= 4) {
             return await step.prompt(NUMBER_PROMPT, 'How many of your startup\'s full-time staff are female (including your cofounder)?');
         } else {
             await step.context.sendActivity(`Thanks. You are not eligible, your startup needs to have at least 4 full-time staffs (including cofounders).`);
@@ -542,7 +550,7 @@ class FounderProfileDialog extends ComponentDialog {
         } else {
             return await step.prompt(CHOICE_PROMPT, {
                 prompt: 'What country (or countries) do you operate in?',
-                choices: ChoiceFactory.toChoices(['Ivory Coast', 'Egypt', 'Ghana', 'Kenya', 'Nigeria', 'Senegal'])
+                choices: ChoiceFactory.toChoices(['Ivory Coast', 'Egypt', 'Ghana', 'Kenya', 'Nigeria', 'Senegal', 'Other'])
             });
         }
     
@@ -550,18 +558,23 @@ class FounderProfileDialog extends ComponentDialog {
 
     async baseCountryStep(step) {
 
-        step.values.baseCountry = step.result;
+        step.values.baseCountry = step.result.value;
         console.log(step.values.baseCountry);
+
+        const countryList = ['Ivory Coast', 'Egypt', 'Ghana', 'Kenya', 'Nigeria', 'Senegal'];
 
         if (step.values.baseCountry != 'Nigeria' && step.values.startupStage == 'Pre-Seed') {
             // true for condition not met
             await step.context.sendActivity(`Thanks. You are not eligible. Your startup needs to be operational only in Nigeria.`);
             return await step.endDialog();
+        } else if (countryList.includes(step.values.baseCountry) == false && step.values.startupStage == 'Seed') {
+            await step.context.sendActivity(`Thanks. You are not eligible. Your startup needs to be seed stage and be operational in any of the ffg countries: Ivory Coast, Egypt, Ghana, Kenya, Nigeria or Senegal.`);
+            return await step.endDialog();
         } else if (step.values.prevRaise == 0) {
             return await step.prompt(CONFIRM_PROMPT, 'Would you be prepared to give us equity shares in your startup in return for our investment-readiness Advisory services?');
         } else {
-            await step.context.sendActivity(`Unknown entry.`);
-            return await step.endDialog();
+            return await step.prompt(CONFIRM_PROMPT, 'Would you be prepared to give us equity shares in your startup in return for our investment-readiness Advisory services?');
+        
         }    
     }
 
