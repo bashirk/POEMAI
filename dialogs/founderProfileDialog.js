@@ -65,6 +65,7 @@ class FounderProfileDialog extends ComponentDialog {
             this.hasCofounderStep.bind(this),
             this.techEnbldStep.bind(this),
             this.industryStep.bind(this),
+            this.mvpcfmStep.bind(this),
             this.mvpStep.bind(this),
             this.prevRaisecfmStep.bind(this),
             this.prevRaiseStep.bind(this),
@@ -173,7 +174,7 @@ class FounderProfileDialog extends ComponentDialog {
         } else {
             // false for has cvi
             await step.context.sendActivity(`Thanks again. But you need to have a CVI before proceeding.`);
-            await step.context.sendActivity(`Kindly go ahead and take your CVI here: https://markschall.com`);
+            await step.context.sendActivity(`Kindly go ahead and take your CVI here: https://markschall.com/core-values-index-cvi-free-assessment`);
             return await step.prompt(NAME_PROMPT, 'And provide the link to your CVI result, below:');
         }
     
@@ -296,7 +297,7 @@ class FounderProfileDialog extends ComponentDialog {
         } else {
             // false for has pitchDeck
             await step.context.sendActivity(`Thanks again. But you need to have a Pitch Deck before proceeding.`);
-            await step.context.sendActivity(`Kindly go ahead and use the format in this document to create your pitch deck: https://pitchdeck.com`);
+            await step.context.sendActivity(`Kindly go ahead and use the format in this document to create your pitch deck: https://www2.slideshare.net/TomiDee/pitching-to-investors-using-poem`);
             return await step.prompt(NAME_PROMPT, 'And provide the link to your created pitch deck, below:');
         }
     
@@ -321,7 +322,7 @@ class FounderProfileDialog extends ComponentDialog {
         } else {
             // false for has poemProfile
             await step.context.sendActivity(`Thanks again. But you need to have a POEM profile before proceeding.`);
-            await step.context.sendActivity(`Kindly go ahead and use the format in this document to create your POEM profile: https://poem.com`);
+            await step.context.sendActivity(`Kindly go ahead and use the format in this document to create your POEM profile: https://docs.google.com/document/d/1VS8PwANzLhSQVPErus6XqDPs4b7uNzW8_j9zYjT6Y0c/edit?usp=sharing`);
             return await step.prompt(NAME_PROMPT, 'And provide the link to your created POEM profile, below:'); 
         }
     
@@ -359,7 +360,7 @@ class FounderProfileDialog extends ComponentDialog {
         if (step.values.mnthOpn > 60 || step.values.mnthOpn < 6) {
             // true, terminate
             step.values.prevRaise = 0;
-            await step.context.sendActivity(`Thanks. But your startup must be in-between 6 months to 5 years of operation.`);
+            await step.context.sendActivity(`Thanks. But your startup's months of operation must be between 6 months to 5 years of operation.`);
             return await step.endDialog();
 
             
@@ -425,16 +426,26 @@ class FounderProfileDialog extends ComponentDialog {
     
     }
 
-    async mvpStep(step) {
+    async mvpcfmStep(step) {
 
         if (step.result) {
             // true for hasMVP
-            return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, has your startup raised capital from investors before?`, ['yes', 'no']);
+            return await step.prompt(NAME_PROMPT, 'Please provide the link to the Minimum Viable Product (MVP):');
+            
         } else {
-            // false for hasMVP 
-            await step.context.sendActivity(`Thanks. But your startup must have built an MVP.`);
-            return await step.endDialog();
+           // false for hasMVP 
+           await step.context.sendActivity(`Thanks. But your startup must have built an MVP.`);
+           return await step.endDialog();
         }
+    }
+
+    async mvpStep(step) {
+
+        step.values.mvp = step.result;
+        console.log(step.values.mvp);
+
+        return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, has your startup raised capital from investors before?`, ['yes', 'no']);
+        
     }
 
     async prevRaisecfmStep(step) {
@@ -478,22 +489,22 @@ class FounderProfileDialog extends ComponentDialog {
             
             return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
      
-        } else if (step.values.revenue > 0 && step.values.revenue <= 100000) {
+        } else if (step.values.revenue > 0 && step.values.revenue < 12000) {
             
+            step.values.startupStage = 'MVP';
+            await step.context.sendActivity(`Thanks. Your startup stage has been identified as ${ step.values.startupStage }.`);
+            
+            return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
+     
+        } else if (step.values.revenue >= 12000 && step.values.revenue < 100000) {
+           
             step.values.startupStage = 'Pre-Seed';
             await step.context.sendActivity(`Thanks. Your startup stage has been identified as ${ step.values.startupStage }.`);
             
             return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
      
-        } else if (step.values.revenue > 100000) {
-           
-            step.values.startupStage = 'Seed';
-            await step.context.sendActivity(`Thanks. Your startup stage has been identified as ${ step.values.startupStage }.`);
-            
-            return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
-     
         } else {
-            step.values.startupStage = 'Undefined';
+            step.values.startupStage = 'Seed';
             await step.context.sendActivity(`Thanks. Your startup stage has been identified as ${ step.values.startupStage }.`);
             
             return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
@@ -565,27 +576,32 @@ class FounderProfileDialog extends ComponentDialog {
 
         if (step.values.baseCountry != 'Nigeria' && step.values.startupStage == 'Pre-Seed') {
             // true for condition not met
-            await step.context.sendActivity(`Thanks. You are not eligible. Your startup needs to be operational only in Nigeria.`);
+            await step.context.sendActivity(`Thanks. You are not eligible. Your startup is Pre-Seed, based on this, your startup needs to be operational in Nigeria.`);
             return await step.endDialog();
         } else if (countryList.includes(step.values.baseCountry) == false && step.values.startupStage == 'Seed') {
             await step.context.sendActivity(`Thanks. You are not eligible. Your startup needs to be seed stage and be operational in any of the ffg countries: Ivory Coast, Egypt, Ghana, Kenya, Nigeria or Senegal.`);
             return await step.endDialog();
+            //if condition met, but prevRaise = 0
         } else if (step.values.prevRaise == 0) {
             return await step.prompt(CONFIRM_PROMPT, 'Would you be prepared to give us equity shares in your startup in return for our investment-readiness Advisory services?');
         } else {
-            return await step.prompt(CONFIRM_PROMPT, 'Would you be prepared to give us equity shares in your startup in return for our investment-readiness Advisory services?');
-        
+            return await step.next(-1);        
         }    
     }
+
 
     async sdgStep(step) {
 
         if (step.result) {
+
+            return await step.prompt(NAME_PROMPT, 'Please list the ways your startup contribute to positive social and/or environmental impact (SDGs):');
+            
+
             // true, ask follow up qstn
-            return await step.prompt(CHOICE_PROMPT, {
-                prompt: 'How does your startup contribute to positive social and/or environmental impact?',
-                choices: ChoiceFactory.toChoices(['Ivory Coast', 'Egypt', 'Ghana', 'Kenya', 'Nigeria', 'Senegal'])
-            });
+            //return await step.prompt(CHOICE_PROMPT, {
+              //  prompt: 'How does your startup contribute to positive social and/or environmental impact?',
+                //choices: ChoiceFactory.toChoices(['GOAL 1: No Poverty', 'Egypt', 'Ghana', 'Kenya', 'Nigeria', 'Senegal'])
+            //});
         
         } else {
             // false for ddShare
@@ -614,20 +630,6 @@ class FounderProfileDialog extends ComponentDialog {
     }
 
   ////STOP  
-
-    
-    async nddShareStep(step) {
-
-        if (step.result) {
-            // true for age of startup
-            return await step.prompt(CONFIRM_PROMPT, 'Do you agree to share due diligence information with TVC Labs for the purposes of assessing your business for potential investment?', ['yes', 'no']);
-        } else {
-            // false for age of startup
-            await step.context.sendActivity(`Thanks. You are not eligible, your startup needs to be at most 4 years old.`);
-            return await step.endDialog();
-        }
-    
-    }
 
     //TODO: ADD ATTCHMNT HERE
 
