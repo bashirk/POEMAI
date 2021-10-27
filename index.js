@@ -12,6 +12,9 @@ require('dotenv').config({ path: ENV_FILE });
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
 const { BotFrameworkAdapter, ConversationState, MemoryStorage, UserState } = require('botbuilder');
 
+// Import required botbuilder-azure service.
+const { CosmosDbPartitionedStorage } = require('botbuilder-azure');
+
 // Import our custom bot class that provides a turn handling function.
 const { MainDialog } = require('./bots/mainDialog');
 const { FounderProfileDialog } = require('./dialogs/founderProfileDialog');
@@ -49,7 +52,14 @@ adapter.onTurnError = async (context, error) => {
 // Define the state store for bot.
 // See https://aka.ms/about-bot-state to learn more about using MemoryStorage.
 // A bot requires a state storage system to persist the dialog and user state between messages.
-const memoryStorage = new MemoryStorage();
+const memoryStorage = new CosmosDbPartitionedStorage({
+    cosmosDbEndpoint: process.env.CosmosDbEndpoint,
+    authKey: process.env.CosmosDbAuthKey,
+    databaseId: process.env.CosmosDbDatabaseId,
+    containerId: process.env.CosmosDbContainerId,
+    compatibilityMode: false
+});
+
 
 // Create conversation state with in-memory storage provider.
 const conversationState = new ConversationState(memoryStorage);

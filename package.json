@@ -17,9 +17,10 @@
     },
     "dependencies": {
         "botbuilder": "~4.14.0",
+        "botbuilder-azure": "^4.14.1",
         "botbuilder-dialogs": "~4.14.0",
         "botbuilder-testing": "~4.14.0",
-        "dotenv": "^8.2.0",
+        "dotenv": "^8.6.0",
         "path": "^0.12.7",
         "restify": "~8.5.1"
     },
@@ -30,8 +31,8 @@
         "eslint-plugin-node": "^11.1.0",
         "eslint-plugin-promise": "^4.2.1",
         "eslint-plugin-standard": "^4.0.1",
-        "nodemon": "~2.0.4",
         "mocha": "^7.1.2",
+        "nodemon": "~2.0.4",
         "nyc": "^15.0.1"
     }
 }

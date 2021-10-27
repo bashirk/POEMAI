@@ -107,7 +107,7 @@ class FounderProfileDialog extends ComponentDialog {
         await step.context.sendActivity(`Hey, welcome!`);
 
         // READER: Note that WaterfallStep always finishes with the end of the Waterfall or with another dialog; here it is a Prompt Dialog.
-        return await step.prompt(NAME_PROMPT, 'Kindly provide me with your first name');
+        return await step.prompt(NAME_PROMPT, 'What\'s your first name');
     }
 
     
@@ -594,7 +594,7 @@ class FounderProfileDialog extends ComponentDialog {
 
         if (step.result) {
 
-            return await step.prompt(NAME_PROMPT, 'Please list the ways your startup contribute to positive social and/or environmental impact (SDGs):');
+            return await step.prompt(NAME_PROMPT, 'How does your startup contribute to positive social and/or environmental impact? (which SDGs?)');
             
 
             // true, ask follow up qstn
