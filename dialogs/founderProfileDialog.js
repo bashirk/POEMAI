@@ -412,12 +412,17 @@ class FounderProfileDialog extends ComponentDialog {
 
     async techEnbldStep(step) {
         
-        if (step.result) {
-            // true for techEnbld, ask follow up qstn
+        if (step.result && step.context.activity.channelId !== Channels.Telegram) {
+            // true & not Telegram for techEnbld, ask follow up qstn
             return await step.prompt(CHOICE_PROMPT, {
                 prompt: 'What industry sector does your startup operate in?',
                 choices: ChoiceFactory.toChoices(['Health (Healthtec)', 'Education (Edutec)', 'Retail (eCommerce)', 'Finance & Banking (Fintech)', 'Agriculture (Agritec)', 'Enterprise (SaaS)', 'Renewables (Energy)', 'Logistics (Mobility)', 'Other'])
             });
+        } else if (step.result && step.context.activity.channelId === Channels.Telegram) {
+            // true & Telegram for techEnbld, ask follow up qstn
+            await step.context.sendActivity('Indutry lists doesn\'t display on Telegram...');
+            return await step.prompt(NAME_PROMPT, 'Please provide the industry your startup operates in:');
+
         } else {
             // false for techEnbld
             await step.context.sendActivity(`Thanks. But your startup must be tech-enabled.`);
