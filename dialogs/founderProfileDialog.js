@@ -60,6 +60,7 @@ class FounderProfileDialog extends ComponentDialog {
             this.poemProfileStep.bind(this),
             this.regLLCcfmStep.bind(this),
             this.regLLCStep.bind(this),
+            this.mnthcfmStep.bind(this),
             this.mnthOpnStep.bind(this),
             this.fulltimeStep.bind(this),
             this.hasCofounderStep.bind(this),
@@ -104,7 +105,7 @@ class FounderProfileDialog extends ComponentDialog {
 
     async firstNameStep(step) {
         // Here's the beginning of the dialog.
-        await step.context.sendActivity(`Hey, welcome!`);
+        await step.context.sendActivity(`Good day, thank you for contacting TVC Labs!`);
 
         // READER: Note that WaterfallStep always finishes with the end of the Waterfall or with another dialog; here it is a Prompt Dialog.
         return await step.prompt(NAME_PROMPT, 'What\'s your first name');
@@ -335,22 +336,32 @@ class FounderProfileDialog extends ComponentDialog {
         console.log(step.values.poemProfile);
 
         // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
-        return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, is your startup registered as a Limited Liability Company?`, ['yes', 'no']);
+        return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, is your startup company registered?`, ['yes', 'no']);
      
     }
 
     async regLLCStep(step) {
-        
+
         if (step.result) {
-            // true for regLLC
-            const promptOptions = { prompt: 'How many months has your startup been in operation?', retryPrompt: 'The value entered must be a decimal.' };
-            return await step.prompt(NUMBER_PROMPT, promptOptions);
+            // true for has regLLC
+            return await step.prompt(NAME_PROMPT, 'Please provide the link to a copy of your CAC incorporation document:');
+            
         } else {
             // false for regLLC 
-            await step.context.sendActivity(`Thanks. But your startup needs to be a registered LLC.`);
-            return await step.endDialog();
+            await step.context.sendActivity(`Thanks. But your startup needs to be a registered company.`);
+            return await step.endDialog(); 
         }
     
+    }
+
+    async mnthcfmStep(step) {
+
+        step.values.poemProfile = step.result;
+
+        console.log(step.values.poemProfile);
+
+        const promptOptions = { prompt: 'How many months has your startup been in operation?', retryPrompt: 'The value entered must be a decimal.' };
+        return await step.prompt(NUMBER_PROMPT, promptOptions);
     }
 
     async mnthOpnStep(step) {
@@ -430,7 +441,7 @@ class FounderProfileDialog extends ComponentDialog {
 
         if (step.result) {
             // true for hasMVP
-            return await step.prompt(NAME_PROMPT, 'Please provide the link to the Minimum Viable Product (MVP):');
+            return await step.prompt(NAME_PROMPT, 'Please provide a link to your website (if any, otherwise put None):');
             
         } else {
            // false for hasMVP 
@@ -487,27 +498,27 @@ class FounderProfileDialog extends ComponentDialog {
             step.values.startupStage = 'Pre-Revenue';
             await step.context.sendActivity(`Thanks. Your startup stage has been identified as ${ step.values.startupStage }.`);
             
-            return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
+            return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff (including your co-founder) does your startup have?`);
      
         } else if (step.values.revenue > 0 && step.values.revenue < 12000) {
             
             step.values.startupStage = 'MVP';
             await step.context.sendActivity(`Thanks. Your startup stage has been identified as ${ step.values.startupStage }.`);
             
-            return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
+            return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff (including your co-founder) does your startup have?`);
      
         } else if (step.values.revenue >= 12000 && step.values.revenue < 100000) {
            
             step.values.startupStage = 'Pre-Seed';
             await step.context.sendActivity(`Thanks. Your startup stage has been identified as ${ step.values.startupStage }.`);
             
-            return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
+            return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff (including your co-founder) does your startup have?`);
      
         } else {
             step.values.startupStage = 'Seed';
             await step.context.sendActivity(`Thanks. Your startup stage has been identified as ${ step.values.startupStage }.`);
             
-            return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff does your startup have (including your cofounder)?`);
+            return await step.prompt(NUMBER_PROMPT, `${ step.values.fname }, how many full-time staff (including your co-founder) does your startup have?`);
         }
     
     }
@@ -519,9 +530,9 @@ class FounderProfileDialog extends ComponentDialog {
         console.log(step.values.fullTimeStaff);
 
         if (step.values.fullTimeStaff >= 4) {
-            return await step.prompt(NUMBER_PROMPT, 'How many of your startup\'s full-time staff are female (including your cofounder)?');
+            return await step.prompt(NUMBER_PROMPT, 'How many of your startup\'s full-time staff are female (including your co-founder)?');
         } else {
-            await step.context.sendActivity(`Thanks. You are not eligible, your startup needs to have at least 4 full-time staffs (including cofounders).`);
+            await step.context.sendActivity(`Thanks. You are not eligible, your startup needs to have at least 4 full-time staffs (including co-founders).`);
             return await step.endDialog();
         }
     
