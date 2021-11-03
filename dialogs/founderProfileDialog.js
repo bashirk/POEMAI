@@ -108,7 +108,7 @@ class FounderProfileDialog extends ComponentDialog {
         await step.context.sendActivity(`Good day, thank you for contacting TVC Labs!`);
 
         // READER: Note that WaterfallStep always finishes with the end of the Waterfall or with another dialog; here it is a Prompt Dialog.
-        return await step.prompt(NAME_PROMPT, 'What\'s your first name');
+        return await step.prompt(NAME_PROMPT, 'What\'s your first name?');
     }
 
     
@@ -356,9 +356,9 @@ class FounderProfileDialog extends ComponentDialog {
 
     async mnthcfmStep(step) {
 
-        step.values.poemProfile = step.result;
+        step.values.cacLink = step.result;
 
-        console.log(step.values.poemProfile);
+        console.log(step.values.cacLink);
 
         const promptOptions = { prompt: 'How many months has your startup been in operation?', retryPrompt: 'The value entered must be a decimal.' };
         return await step.prompt(NUMBER_PROMPT, promptOptions);
