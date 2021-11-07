@@ -26,6 +26,25 @@ const adapter = new BotFrameworkAdapter({
     appPassword: process.env.MicrosoftAppPassword
 });
 
+// Import WhatsApp Twilio adapter
+const { TwilioWhatsAppAdapter } = require('@botbuildercommunity/adapter-twilio-whatsapp');
+
+const whatsAppAdapter = new TwilioWhatsAppAdapter({
+    accountSid: process.env.accountSid, // Account SID
+    authToken: process.env.authToken, // Auth Token
+    phoneNumber: process.env.phoneNumber, // The From parameter consisting of whatsapp: followed by the sending WhatsApp number (using E.164 formatting)
+    endpointUrl: process.env.endpointUrl // Endpoint URL you configured in the sandbox, used for validation
+});
+
+// WhatsApp endpoint for Twilio
+server.post('/api/whatsapp/messages', (req, res) => {
+    whatsAppAdapter.processActivity(req, res, async (context) => {
+        // Route to main dialog.
+        await bot.run(context);
+    });
+});
+
+
 // Catch-all for errors.
 adapter.onTurnError = async (context, error) => {
     // This check writes out errors to console log .vs. app insights.
