@@ -401,6 +401,7 @@ class FounderProfileDialog extends ComponentDialog {
 
         if (step.result) {
             // true for hasCofounder
+            await step.context.sendActivity(`Thanks. Please note that you\'ll need to provide your co-founder\'s CVI & LinkedIn profiles when a member of our team reaches out.`);
             return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, is your startup a technology-enabled business?`, ['yes', 'no']);
         } else {
             // false for hasCofounder 
@@ -420,7 +421,7 @@ class FounderProfileDialog extends ComponentDialog {
             });
         } else if (step.result && step.context.activity.channelId === Channels.Telegram) {
             // true & Telegram for techEnbld, ask follow up qstn
-            await step.context.sendActivity('Indutry lists doesn\'t display on Telegram...');
+            await step.context.sendActivity('List of industries won\'t display on Telegram...');
             return await step.prompt(NAME_PROMPT, 'Please provide the industry your startup operates in:');
 
         } else {
