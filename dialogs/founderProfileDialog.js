@@ -147,13 +147,13 @@ class FounderProfileDialog extends ComponentDialog {
 
         if (step.result) {
             // true for has linkedin
-            return await step.prompt(NAME_PROMPT, 'Please provide a link to your LinkedIn profile:');
+            return await step.prompt(NAME_PROMPT, 'Please share the link to your LinkedIn profile:');
             
         } else {
             // false for has linkedin
             await step.context.sendActivity(`Thanks. But you need to have a LinkedIn profile before proceeding.`);
-            await step.context.sendActivity(`Kindly go ahead in creating a LinkedIn profile here: https://linkedin.com`);
-            return await step.prompt(NAME_PROMPT, 'And provide the link to your newly-created LinkedIn profile, below:');
+            await step.context.sendActivity(`Please create a LinkedIn account here: https://linkedin.com`);
+            return await step.prompt(NAME_PROMPT, 'And share the link to your newly-created LinkedIn profile, below:');
         }
     
     }
@@ -162,7 +162,10 @@ class FounderProfileDialog extends ComponentDialog {
         step.values.linkedin = step.result;
         console.log(step.values.linkedin);
         // Running a prompt here means the next WaterfallStep will be run when the user's response is received.
-        return await step.prompt(CONFIRM_PROMPT, `Thanks, ${ step.values.fname }. Do you have a CVI?`, ['yes', 'no']);
+        await step.context.sendActivity(`Thanks, ${ step.values.fname }. Before proceeding, please note, CVI stands for Core Values Index ™.`);
+        await step.context.sendActivity(`And, it is a revolutionary assessment that bypasses personality and behaviour, thereby revealing your unchanging motivational drivers and sense for how you are wired to contribute to the world around you.`);
+        await step.context.sendActivity(`At TVC Labs, we use the CVI for the profiling of our founders.`);
+        return await step.prompt(CONFIRM_PROMPT, `So, ${ step.values.fname }. Do you have a CVI?`, ['yes', 'no']);
      
     }
 
@@ -170,12 +173,12 @@ class FounderProfileDialog extends ComponentDialog {
 
         if (step.result) {
             // true for has cvi
-            return await step.prompt(NAME_PROMPT, 'Please provide a link to your CVI:');
+            return await step.prompt(NAME_PROMPT, 'Please share the link to your CVI:');
             
         } else {
             // false for has cvi
             await step.context.sendActivity(`Thanks again. But you need to have a CVI before proceeding.`);
-            await step.context.sendActivity(`Kindly go ahead and take your CVI here: https://markschall.com/core-values-index-cvi-free-assessment`);
+            await step.context.sendActivity(`Please take a CVI test here: https://markschall.com/core-values-index-cvi-free-assessment`);
             return await step.prompt(NAME_PROMPT, 'And provide the link to your CVI result, below:');
         }
     
@@ -193,7 +196,7 @@ class FounderProfileDialog extends ComponentDialog {
 
         if (step.result) {
             // true for has twitter
-            return await step.prompt(NAME_PROMPT, 'Please provide a link to your Twitter profile:');
+            return await step.prompt(NAME_PROMPT, 'Please share the link to your Twitter profile:');
             
         } else {
             // false for has twitter
@@ -204,7 +207,7 @@ class FounderProfileDialog extends ComponentDialog {
 
     async instcfmStep(step) {
         step.values.twitter = step.result;
-        const msg = step.values.twitter === 'Negative' ? 'Thanks. It has been recorded that you have no Twitter account.' : `I have the link to your Twitter profile as: ${ step.values.twitter }.`;
+        const msg = step.values.twitter === 'Negative' ? 'Thanks. It has been noted that you have no Twitter account.' : `I have the link to your Twitter profile as: ${ step.values.twitter }.`;
 
         await step.context.sendActivity(msg);
 
@@ -220,7 +223,7 @@ class FounderProfileDialog extends ComponentDialog {
 
         if (step.result) {
             // true for has Instagram
-            return await step.prompt(NAME_PROMPT, 'Please provide a link to your Instagram profile:');
+            return await step.prompt(NAME_PROMPT, 'Please share the link to your Instagram profile:');
             
         } else {
             // false for has Instagram
@@ -232,7 +235,7 @@ class FounderProfileDialog extends ComponentDialog {
     async fbcfmStep(step) {
 
         step.values.instagram = step.result;
-        const msg = step.values.instagram === 'Negative' ? 'Thanks. It has been recorded that you have no Instagram account.' : `I have the link to your Instagram profile as: ${ step.values.instagram }.`;
+        const msg = step.values.instagram === 'Negative' ? 'Thanks. It has been noted that you have no Instagram account.' : `I have the link to your Instagram profile as: ${ step.values.instagram }.`;
 
         await step.context.sendActivity(msg);
 
@@ -248,7 +251,7 @@ class FounderProfileDialog extends ComponentDialog {
 
         if (step.result) {
             // true for has Facebook
-            return await step.prompt(NAME_PROMPT, 'Please provide a link to your Facebook profile:');
+            return await step.prompt(NAME_PROMPT, 'Please share the link to your Facebook profile:');
             
         } else {
             // false for has Facebook
@@ -259,7 +262,7 @@ class FounderProfileDialog extends ComponentDialog {
 
     async startupNameStep(step) {
         step.values.facebook = step.result;
-        const msg = step.values.facebook === 'Negative' ? 'Thanks. It has been recorded that you have no Facebook account.' : `I have the link to your Facebook profile as: ${ step.values.facebook }.`;
+        const msg = step.values.facebook === 'Negative' ? 'Thanks. It has been noted that you have no Facebook account.' : `I have the link to your Facebook profile as: ${ step.values.facebook }.`;
 
         await step.context.sendActivity(msg);
 
@@ -293,13 +296,13 @@ class FounderProfileDialog extends ComponentDialog {
 
         if (step.result) {
             // true for has pitchDeck
-            return await step.prompt(NAME_PROMPT, 'Please provide the link to your startup\'s pitch deck:');
+            return await step.prompt(NAME_PROMPT, 'Please share the link to your startup\'s pitch deck:');
             
         } else {
             // false for has pitchDeck
             await step.context.sendActivity(`Thanks again. But you need to have a Pitch Deck before proceeding.`);
-            await step.context.sendActivity(`Kindly go ahead and use the format in this document to create your pitch deck: https://www2.slideshare.net/TomiDee/pitching-to-investors-using-poem`);
-            return await step.prompt(NAME_PROMPT, 'And provide the link to your created pitch deck, below:');
+            await step.context.sendActivity(`Please use the format in this document to create your pitch deck: https://www2.slideshare.net/TomiDee/pitching-to-investors-using-poem`);
+            return await step.prompt(NAME_PROMPT, 'And share the link to your created pitch deck, below:');
         }
     
     }
@@ -318,13 +321,13 @@ class FounderProfileDialog extends ComponentDialog {
 
         if (step.result) {
             // true for has poemProfile
-            return await step.prompt(NAME_PROMPT, 'Please provide the link to your startup\'s POEM profile:');
+            return await step.prompt(NAME_PROMPT, 'Please share the link to your startup\'s POEM profile:');
             
         } else {
             // false for has poemProfile
-            await step.context.sendActivity(`Thanks again. But you need to have a POEM profile before proceeding.`);
-            await step.context.sendActivity(`Kindly go ahead and use the format in this document to create your POEM profile: https://docs.google.com/document/d/1VS8PwANzLhSQVPErus6XqDPs4b7uNzW8_j9zYjT6Y0c/edit?usp=sharing`);
-            return await step.prompt(NAME_PROMPT, 'And provide the link to your created POEM profile, below:'); 
+            await step.context.sendActivity(`Thanks again. You need to have a POEM profile before proceeding.`);
+            await step.context.sendActivity(`Please use the format in this document to create your POEM profile: https://docs.google.com/document/d/1VS8PwANzLhSQVPErus6XqDPs4b7uNzW8_j9zYjT6Y0c/edit?usp=sharing`);
+            return await step.prompt(NAME_PROMPT, 'And share the link to your created POEM profile, below:'); 
         }
     
     }
@@ -344,7 +347,7 @@ class FounderProfileDialog extends ComponentDialog {
 
         if (step.result) {
             // true for has regLLC
-            return await step.prompt(NAME_PROMPT, 'Please provide the link to a copy of your CAC incorporation document:');
+            return await step.prompt(NAME_PROMPT, 'Please share the link to a copy of your CAC incorporation document:');
             
         } else {
             // false for regLLC 
@@ -401,7 +404,7 @@ class FounderProfileDialog extends ComponentDialog {
 
         if (step.result) {
             // true for hasCofounder
-            await step.context.sendActivity(`Thanks. Please note that you\'ll need to provide your co-founder\'s CVI & LinkedIn profiles when a member of our team reaches out.`);
+            await step.context.sendActivity(`Thanks. Please note that you\'ll need to provide the CVI & LinkedIn profile(s) of your co-founder(s), when a member of our team reaches out.`);
             return await step.prompt(CONFIRM_PROMPT, `${ step.values.fname }, is your startup a technology-enabled business?`, ['yes', 'no']);
         } else {
             // false for hasCofounder 
@@ -447,7 +450,7 @@ class FounderProfileDialog extends ComponentDialog {
 
         if (step.result) {
             // true for hasMVP
-            return await step.prompt(NAME_PROMPT, 'Please provide a link to your website (if any, otherwise put None):');
+            return await step.prompt(NAME_PROMPT, 'Please share the link to your website (if any, otherwise put None):');
             
         } else {
            // false for hasMVP 
