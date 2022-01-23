@@ -674,64 +674,22 @@ class FounderProfileDialog extends ComponentDialog {
             founderProfile.pitchDeck = step.values.pitchDeck;
             founderProfile.poemProfile = step.values.poemProfile;
             founderProfile.mnthOpn = step.values.mnthOpn;
-           
- /*
-      
-     this.firstNameStep.bind(this),
-            this.lastNameStep.bind(this),
-            this.emailStep.bind(this),
-            this.linkedincfmStep.bind(this),
-            this.linkedInStep.bind(this),
-            this.cvicfmStep.bind(this),
-            this.cviStep.bind(this),
-            this.twtcfmStep.bind(this),
-            this.twitterStep.bind(this),
-            this.instcfmStep.bind(this),
-            this.instagramStep.bind(this),
-            this.fbcfmStep.bind(this),
-            this.facebookStep.bind(this),
-            this.startupNameStep.bind(this),
-            this.startupDescStep.bind(this),
-            this.pitchcfmStep.bind(this),
-            this.pitchDeckStep.bind(this),
-            this.poemcfmStep.bind(this),
-            this.poemProfileStep.bind(this),
-            this.regLLCcfmStep.bind(this),
-            this.regLLCStep.bind(this),
-            this.mnthcfmStep.bind(this),
-            this.mnthOpnStep.bind(this),
-            this.fulltimeStep.bind(this),
-            this.hasCofounderStep.bind(this),
-            this.techEnbldStep.bind(this),
-            this.industryStep.bind(this),
-            this.mvpcfmStep.bind(this),
-            this.mvpStep.bind(this),
-            this.prevRaisecfmStep.bind(this),
-            this.prevRaiseStep.bind(this),
-            this.revenueStep.bind(this),
-            this.employeesStep.bind(this),
-            this.femaleFTEStep.bind(this),
-            this.nigerianEduStep.bind(this),
-            this.baseCountryStep.bind(this),
-            this.sdgStep.bind(this),
-            this.learnStep.bind(this),
-            this.equityStep.bind(this),
+            founderProfile.industry = step.values.industry;
+            founderProfile.mvplink = step.values.mvp;
+            founderProfile.prevRaise = step.values.prevRaise;
+            founderProfile.revenue = step.values.revenue;
+            founderProfile.startupStage = step.values.startupStage;
+            founderProfile.fulltimeStaff = step.values.fullTimeStaff;
+            founderProfile.femaleFTE = step.values.femaleFTE;
+            founderProfile.baseCountry = step.values.baseCountry;
+            founderProfile.SDG = step.values.sdg;
+            founderProfile.refferal = step.values.ref;
 
- */
+            let msg = `Thanks, ${ founderProfile.fname }. \n
+            For providing details on yourself and your startup company. \n\n
+            A member of the TVC Labs team will reach out to you if your the provided information interests the team. \n\n
+            Goodluck!
 
-            let msg = `Thanks, ${ founderProfile.fname }. \n\n
-            I have your last name as ${ founderProfile.lname }, \n\n
-            your email as ${ founderProfile.email }, \n\n
-            the link to your linkedin as ${ founderProfile.linkedin }, \n\n
-            the link to your cvi as ${ founderProfile.cvi }, \n\n
-            the link to your facebook as ${ founderProfile.facebook }, \n\n
-            the link to your instagram as ${ founderProfile.instagram }, \n\n
-            the link to your twitter as ${ founderProfile.twitter }, \n\n
-            your startup name as ${ founderProfile.startupname }, \n\n
-            a description of your startup as ${ founderProfile.startupDesc }, \n\n
-            the link to your pitch deck as ${ founderProfile.pitchDeck }, \n\n
-            the link to your POEM profile as ${ founderProfile.poemProfile }, \n\n
-            your months of operation as ${ founderProfile.mnthOpn },`;
             //if (founderProfile.age !== -1) {
               //  msg += ` I also have your age as ${ founderProfile.age }`;
             //}
