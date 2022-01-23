@@ -675,6 +675,50 @@ class FounderProfileDialog extends ComponentDialog {
             founderProfile.poemProfile = step.values.poemProfile;
             founderProfile.mnthOpn = step.values.mnthOpn;
            
+ /*
+      
+     this.firstNameStep.bind(this),
+            this.lastNameStep.bind(this),
+            this.emailStep.bind(this),
+            this.linkedincfmStep.bind(this),
+            this.linkedInStep.bind(this),
+            this.cvicfmStep.bind(this),
+            this.cviStep.bind(this),
+            this.twtcfmStep.bind(this),
+            this.twitterStep.bind(this),
+            this.instcfmStep.bind(this),
+            this.instagramStep.bind(this),
+            this.fbcfmStep.bind(this),
+            this.facebookStep.bind(this),
+            this.startupNameStep.bind(this),
+            this.startupDescStep.bind(this),
+            this.pitchcfmStep.bind(this),
+            this.pitchDeckStep.bind(this),
+            this.poemcfmStep.bind(this),
+            this.poemProfileStep.bind(this),
+            this.regLLCcfmStep.bind(this),
+            this.regLLCStep.bind(this),
+            this.mnthcfmStep.bind(this),
+            this.mnthOpnStep.bind(this),
+            this.fulltimeStep.bind(this),
+            this.hasCofounderStep.bind(this),
+            this.techEnbldStep.bind(this),
+            this.industryStep.bind(this),
+            this.mvpcfmStep.bind(this),
+            this.mvpStep.bind(this),
+            this.prevRaisecfmStep.bind(this),
+            this.prevRaiseStep.bind(this),
+            this.revenueStep.bind(this),
+            this.employeesStep.bind(this),
+            this.femaleFTEStep.bind(this),
+            this.nigerianEduStep.bind(this),
+            this.baseCountryStep.bind(this),
+            this.sdgStep.bind(this),
+            this.learnStep.bind(this),
+            this.equityStep.bind(this),
+
+ */
+
             let msg = `Thanks, ${ founderProfile.fname }. \n\n
             I have your last name as ${ founderProfile.lname }, \n\n
             your email as ${ founderProfile.email }, \n\n
