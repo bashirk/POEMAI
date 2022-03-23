@@ -3,11 +3,18 @@
 
 const restify = require('restify');
 const path = require('path');
+const bodyParser = require('body-parser'); 
+const request = require('request'); 
+const corsMiddleware = require('restify-cors-middleware'); 
 
 // Read environment variables from .env file
 const ENV_FILE = path.join(__dirname, '.env');
 require('dotenv').config({ path: ENV_FILE });
 
+const cors = corsMiddleware({ 
+    origins: ['*'] 
+  }); 
+  
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
 const { BotFrameworkAdapter, ConversationState, MemoryStorage, UserState } = require('botbuilder');
@@ -92,12 +99,41 @@ const bot = new MainDialog(conversationState, userState, dialog);
 
 // Create HTTP server.
 const server = restify.createServer();
+server.pre(cors.preflight); 
+  server.use(cors.actual); 
+  server.use(bodyParser.json({ 
+    extended: false 
+  }));
 server.listen(process.env.port || process.env.PORT || 3978, function() {
     console.log(`\n${ server.name } listening to ${ server.url }.`);
     console.log('\nTesting the POEM AI bot locally;');
     console.log('\nGet the Bot Framework Emulator: https://aka.ms/botframework-emulator');
     console.log('\nTo talk to the POEM AI bot, open the emulator, and select "Open Bot"');
 });
+
+// Generates a Direct Line token 
+server.post('/directline/token', async (_, res) => {
+    console.log('requesting token ');
+    try {
+      const cres = await fetch('https://directline.botframework.com/v3/directline/tokens/generate', {
+        headers: { 
+          authorization: `Bearer ${ process.env.DIRECT_LINE_SECRET }`
+        },
+        method: 'POST'
+      });
+  
+      const json = await cres.json();
+  
+  
+      if ('error' in json) {
+        res.send(500);
+      } else {
+        res.send(json);
+      }
+    } catch (err) {
+      res.send(500);
+    }
+  });
 
 // Listen for incoming requests.
 server.post('/api/messages', (req, res) => {
