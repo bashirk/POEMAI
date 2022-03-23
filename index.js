@@ -71,14 +71,15 @@ adapter.onTurnError = async (context, error) => {
 // Define the state store for bot.
 // See https://aka.ms/about-bot-state to learn more about using MemoryStorage.
 // A bot requires a state storage system to persist the dialog and user state between messages.
-const memoryStorage = new MemoryStorage();
-//const memoryStorage = new CosmosDbPartitionedStorage({
-  //  cosmosDbEndpoint: process.env.CosmosDbEndpoint,
-    //authKey: process.env.CosmosDbAuthKey,
-    //databaseId: process.env.CosmosDbDatabaseId,
-    //containerId: process.env.CosmosDbContainerId,
-    //compatibilityMode: false
-//});
+
+//const memoryStorage = new MemoryStorage();
+const memoryStorage = new CosmosDbPartitionedStorage({
+    cosmosDbEndpoint: process.env.CosmosDbEndpoint,
+    authKey: process.env.CosmosDbAuthKey,
+    databaseId: process.env.CosmosDbDatabaseId,
+    containerId: process.env.CosmosDbContainerId,
+    compatibilityMode: false
+});
 
 
 // Create conversation state with in-memory storage provider.
